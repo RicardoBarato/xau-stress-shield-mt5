@@ -154,10 +154,11 @@ The value today is architecture and method: stress taxonomy, separation of respo
 git clone https://github.com/RicardoBarato/xau-stress-shield-mt5.git
 cd xau-stress-shield-mt5
 python -m venv .venv
-. .venv/Scripts/activate
+python -m pip install --upgrade pip
 python -m compileall scripts tests
 python -m unittest discover -s tests
 python scripts/publication_guard.py .
+python -c "import pathlib; [print(p) for p in pathlib.Path('examples/synthetic_data').rglob('*') if p.is_file()]"
 ```
 
 Useful review path:
@@ -167,7 +168,7 @@ Useful review path:
 3. Review [docs/CONCEPTUAL_ARCHITECTURE.md](docs/CONCEPTUAL_ARCHITECTURE.md).
 4. Propose an experiment using [docs/CONTINUATION_GUIDE.md](docs/CONTINUATION_GUIDE.md).
 
-This repository does not provide a public operational EA.
+No third-party package install is required for the current public guard tests. This repository does not provide a public operational EA.
 
 ## Engineering and portfolio value
 
