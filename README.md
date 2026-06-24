@@ -1,108 +1,191 @@
 # XAU Stress Shield MT5
 
 [![CI](https://github.com/RicardoBarato/xau-stress-shield-mt5/actions/workflows/ci.yml/badge.svg)](https://github.com/RicardoBarato/xau-stress-shield-mt5/actions/workflows/ci.yml)
-![Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue)
-![MetaTrader 5](https://img.shields.io/badge/platform-MetaTrader%205-informational)
-![MQL5](https://img.shields.io/badge/MQL5-research%20architecture-informational)
-![Documentation](https://img.shields.io/badge/status-documentation--first-555)
+![Documentation-first](https://img.shields.io/badge/status-documentation--first-555)
 ![Research Archive](https://img.shields.io/badge/research-archive-2f6f4e)
+![MetaTrader 5](https://img.shields.io/badge/platform-MetaTrader%205-informational)
+![Risk Management](https://img.shields.io/badge/focus-risk%20management-informational)
+![Evidence Insufficient](https://img.shields.io/badge/evidence-insufficient-orange)
+![Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue)
 ![Educational](https://img.shields.io/badge/purpose-educational-555)
-![Evidence Status](https://img.shields.io/badge/evidence-insufficient-orange)
-![No Operational Approval](https://img.shields.io/badge/operational%20approval-none-red)
 
-Documentation-first XAUUSD risk research archive for MetaTrader 5, focused on stress regimes, survival controls, limitations and reproducibility.
+Documentation-first research archive exploring stress-regime detection, survival controls and exposure containment for XAUUSD strategy workflows.
 
-XAU Stress Shield MT5 studies a defensive layer around gold strategy workflows: how an automated system might reduce, pause or block exposure when volatility, drawdown or abnormal market conditions make survival more important than entry frequency.
+XAU Stress Shield MT5 studies a survival problem: a strategy can have a reasonable entry idea and still fail when volatility, drawdown clusters or execution stress change the risk environment. This archive separates entry logic from survival logic so the defensive layer can be studied on its own.
 
-Unlike EA USTEC Lab, this repository does not publish verified quantitative performance metrics. Its current value is architectural: it frames the risk problem, defines evidence standards, documents limitations and leaves a clean continuation path for future testing without inventing results.
+The public repository documents the architecture, research questions, evidence gap and validation plan. It does not publish operational trading source or verified quantitative performance metrics. Researchers can use it as a framework for future testing without treating the current archive as a performance claim.
 
-> Research archive - open for study and continuation.
-> Evidence status: `data_or_evidence_insufficient`. No candidate is approved for live, demo, signal or automated operational use.
+> Public scope: documentation, methodology and reproducibility design.
+>
+> Evidence status: `data_or_evidence_insufficient`.
+>
+> No public trading source or validated performance claim.
 
 ## Project snapshot
 
 | Area | Current state |
 | --- | --- |
-| Market | XAUUSD / gold |
-| Platform | MetaTrader 5 |
-| Primary focus | Stress regimes and survival controls |
-| Repository posture | Documentation-first research archive |
-| Published source posture | Public scaffold and review documentation |
-| Quantitative evidence | Not sufficient for performance claims |
+| Market | XAUUSD / Gold |
+| Platform context | MetaTrader 5 |
+| Public scope | Documentation, methodology and safeguards |
+| Trading source | Not published |
+| Verified metrics | Insufficient evidence |
 | Operational approval | None |
-| Public purpose | Education, limitations and continuation |
+| Research question | Can a stress shield improve strategy survival? |
+| Public purpose | Preserve the framework for future continuation |
 
-## Why this project is interesting
+## The core idea
 
-Most trading research focuses on entries. This project focuses on the defensive layer that decides when a system should reduce risk, stop trading or wait for conditions to normalize. That makes the repository useful for developers thinking about survival controls, not only signal generation.
+A good entry does not guarantee survival. Abnormal volatility can make normal risk assumptions unreliable, and drawdown clusters may require a separate control layer. A stress shield observes market state and can allow, reduce, pause or block exposure depending on conditions.
 
-The archive is intentionally conservative: no backtest numbers are shown because no verified evidence bundle is present in the public package. Instead of filling that gap with weak claims, the project documents what would be required before any result could be presented responsibly.
+The shield must be causal, testable and auditable. It should not be used to hide a weak base strategy; it should show whether a separate survival layer improves risk behavior under defined stress regimes.
 
-## Core research idea
+## Research questions
 
-Separate entry logic from survival logic.
+- Can stress regimes be detected without lookahead?
+- How should legitimate volatility be separated from harmful stress?
+- What false positives are acceptable?
+- Which blocked trades were good and which were bad?
+- How should cooldown windows be defined?
+- How should normal risk and stress risk be compared?
+- Does the result reproduce across brokers?
+- What prevents overfitting?
+- What makes a kill switch auditable?
+- How should strategy risk and execution risk be separated?
+
+## Conceptual architecture
 
 ```mermaid
 flowchart LR
-    A[Market and account context] --> B[Stress detector]
-    B --> C{Stress state}
-    C -->|Normal| D[Allow base strategy rules]
-    C -->|Elevated| E[Reduce or pause exposure]
-    C -->|Extreme| F[Block new risk]
-    E --> G[Record activation and outcome]
-    F --> G
-    G --> H[Evidence review]
+    A[Strategy signal] --> B[Market state observer]
+    B --> C[Stress-regime classifier]
+    C --> D[Risk governor]
+    D --> E{Exposure decision}
+    E -->|Allow| F[Normal execution boundary]
+    E -->|Reduce| G[Reduced exposure]
+    E -->|Pause| H[Cooldown / no-trade]
+    E -->|Block| I[Kill switch]
+    F --> J[Monitoring and evidence]
+    G --> J
+    H --> J
+    I --> J
 ```
+
+This diagram is conceptual and non-operational.
 
 ## Evidence status
 
-| Question | Current answer |
+| Evidence component | Public status |
 | --- | --- |
-| Are verified public backtest metrics included? | No |
-| Are live, demo, paper or signal results included? | No |
-| Is the repository claiming profitability? | No |
-| Is the project useful as a methodology scaffold? | Yes |
-| Can future evidence be added? | Yes, if period, instrument, timeframe, deposit, PF, drawdown, trade count and source traceability are documented |
+| Research hypothesis | Available |
+| Architecture | Available |
+| Risk-control concepts | Available |
+| Public trading source | Not available |
+| Reproducible market dataset | Not available |
+| Verified backtest metrics | Insufficient |
+| Operational approval | None |
 
-See [docs/XAU_RESULTS.md](docs/XAU_RESULTS.md) and [docs/XAU_NEGATIVE_RESULTS.md](docs/XAU_NEGATIVE_RESULTS.md).
+`data_or_evidence_insufficient` means the public archive does not contain a verified evidence bundle with period, deposit, instrument, timeframe, profit factor, drawdown, trade count and source traceability. Metrics should not be invented or inferred.
 
-## Research components
+## What has value today
 
-| Component | Purpose |
-| --- | --- |
-| Stress regime definition | Describe abnormal conditions before deciding what the shield should do |
-| Survival actions | Reduce, pause or block exposure instead of forcing entries |
-| Limitation review | Track cases where defensive rules can overfit or remove useful participation |
-| Reproducibility notes | Define what evidence must exist before metrics are published |
-| Publication guard | Keep the public repository free of private artifacts and unsupported claims |
+The value today is architecture and method: stress taxonomy, separation of responsibilities, limitation tracking, validation design, publication hygiene, research questions and continuation path.
+
+## Validation plan for future contributors
+
+1. Define the baseline strategy.
+2. Create a data contract.
+3. Define stress labels.
+4. Build causal features.
+5. Define metrics.
+6. Measure false positives.
+7. Run ablation tests.
+8. Test multiple years.
+9. Test multiple brokers.
+10. Run Monte Carlo analysis.
+11. Publish positive and negative results together.
+12. Keep operational approval separate.
+
+## Included in this archive
+
+- Documentation-first stress-shield research method.
+- Evidence-gap explanation.
+- Reproducibility notes.
+- Limitation tracking.
+- Publication guard and tests.
+- Synthetic examples.
+
+## Deliberately not included
+
+- Public trading source.
+- Verified performance metrics.
+- Raw market data.
+- Raw reports.
+- Account, credential or broker materials.
+- Operational approval.
+- Unsupported performance claims.
 
 ## Repository map
 
-| Path | Purpose |
-| --- | --- |
-| [docs/RESEARCH_METHOD.md](docs/RESEARCH_METHOD.md) | Stress-control research method |
-| [docs/XAU_RESULTS.md](docs/XAU_RESULTS.md) | Evidence status and no-metrics decision |
-| [docs/XAU_NEGATIVE_RESULTS.md](docs/XAU_NEGATIVE_RESULTS.md) | Current negative-result posture |
-| [docs/XAU_LIMITATIONS.md](docs/XAU_LIMITATIONS.md) | Known risks and limitations |
-| [docs/XAU_REPRODUCIBILITY.md](docs/XAU_REPRODUCIBILITY.md) | Reproducibility expectations |
-| [docs/PORTFOLIO_RESEARCH_OVERVIEW.md](docs/PORTFOLIO_RESEARCH_OVERVIEW.md) | Portfolio-style technical overview |
-| [scripts/publication_guard.py](scripts/publication_guard.py) | Public repository guard |
-| [tests](tests) | Guard tests using synthetic fixtures |
+```text
+.
+|-- src/
+|   |-- mql5/
+|   `-- python/
+|-- tests/
+|-- examples/
+|   `-- synthetic_data/
+|-- scripts/
+|-- docs/
+`-- .github/workflows/
+```
 
-## What would make the project stronger
+- `src/mql5/` documents the public source posture; no operational XAU EA is published here.
+- `src/python/` reserves space for public-safe Python research tooling.
+- `tests/` contains guard tests using synthetic fixtures.
+- `examples/synthetic_data/` contains non-market examples.
+- `scripts/` contains the publication guard.
+- `docs/` contains method, limitation, reproducibility and evidence-gap notes.
+- `.github/workflows/` runs public candidate CI.
 
-Future work should add evidence only when it can be audited. A responsible update would include:
+## Quick start
 
-1. A clearly defined historical period and instrument mapping.
-2. Timeframe, spread, commission and execution assumptions.
-3. Profit factor, drawdown, trade count and net result.
-4. Positive and negative outcomes side by side.
-5. A decision that separates research usefulness from operational approval.
+```bash
+git clone https://github.com/RicardoBarato/xau-stress-shield-mt5.git
+cd xau-stress-shield-mt5
+python -m venv .venv
+. .venv/Scripts/activate
+python -m compileall scripts tests
+python -m unittest discover -s tests
+python scripts/publication_guard.py .
+```
 
-## Public-use boundaries
+Useful review path:
 
-- Educational research archive only.
-- No financial advice, trading advice, signal service or managed-account claim.
-- No candidate is approved for live, demo, paper, signal or automated operational use.
-- No validated performance evidence is included in the current public package.
-- Do not infer performance quality from architecture, diagrams or future research direction.
+1. Read [docs/RESEARCH_METHOD.md](docs/RESEARCH_METHOD.md).
+2. Read [docs/EVIDENCE_GAP.md](docs/EVIDENCE_GAP.md).
+3. Review [docs/CONCEPTUAL_ARCHITECTURE.md](docs/CONCEPTUAL_ARCHITECTURE.md).
+4. Propose an experiment using [docs/CONTINUATION_GUIDE.md](docs/CONTINUATION_GUIDE.md).
+
+This repository does not provide a public operational EA.
+
+## Engineering and portfolio value
+
+The project demonstrates research architecture, risk modeling, documentation-first design, public/private sanitization, secure release engineering, tests, CI, evidence governance, reproducibility planning and honest uncertainty communication.
+
+## How to contribute
+
+Useful contributions include clearer stress definitions, reproducibility improvements, validation protocols, limitation analysis, synthetic test cases, documentation corrections and future evidence packages that include both positive and negative outcomes.
+
+## Supporting documents
+
+- [Portfolio overview](docs/PORTFOLIO_OVERVIEW.md)
+- [Research questions](docs/RESEARCH_QUESTIONS.md)
+- [Conceptual architecture](docs/CONCEPTUAL_ARCHITECTURE.md)
+- [Evidence gap](docs/EVIDENCE_GAP.md)
+- [Continuation guide](docs/CONTINUATION_GUIDE.md)
+- [Public archive release notes](docs/PUBLIC_ARCHIVE_RELEASE_NOTES.md)
+
+## Disclaimer
+
+This repository is educational research material only. It is not financial advice, trading advice, investment advice, a signal service, live performance evidence or a promise of returns. No system in this archive is approved for operational use.
